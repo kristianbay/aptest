@@ -1,4 +1,5 @@
-import sys, time, re
+import sys, time, re, os
+import subprocess
 import serial, threading
 import json
 
@@ -125,9 +126,11 @@ class DeviceTester(object):
         return result
 
     def run_test_cmd(self, test_cmd, expected, prompt=True, timeout=1.5):
+#         print "run_test_cmd: [%s] [%s]" % (json.dumps(test_cmd), json.dumps(expected))
+#         print "run_test_cmd: [%s] [%s]" % (test_cmd, expected)
         self.curr_data = ''
         self.running = True
-        self.write(test_cmd)
+        self.write(str(test_cmd))
         self.is_ready.acquire()
         self.is_ready.wait(timeout)
         self.is_ready.release()
@@ -158,6 +161,40 @@ class DeviceTester(object):
                 print 'Error opening "%s"' % (filename)
         else:
             print json.dumps(self.report, indent=2)
+        filename = 'report.rst'
+        try:
+            with open(filename, 'wt') as fh:
+                line_end = '\n'
+                fh.write('.. section-numbering::' + 2*line_end)
+                fh.write('.. role:: okbox' + 2*line_end)
+                fh.write('.. role:: failedbox' + 2*line_end)
+
+                fh.write('Test report' + line_end)
+                fh.write('===========' + 2*line_end)
+                fh.write('Device under test: ' + 2*line_end)
+                fh.write('Unsolicited' + line_end)
+                fh.write('***********' + 2*line_end)
+                for un_sol in self.report['unsolicited']:
+                    output = json.dumps(un_sol['msg']).strip('"').replace('\\', '\\\\').strip()
+                    fh.write('msg: : :failedbox:`' + output + '`' + 2*line_end)
+                fh.write(2*line_end)
+                fh.write('Test commands and results' + line_end)
+                fh.write('*************************' + 2*line_end)
+                fh.write('List of test commands' + 2*line_end)
+                fh.write('----' + 2*line_end)
+                for test_result in self.report['test_results']:
+                    if test_result['result'] == 'OK':
+                        style = 'okbox'
+                    else:
+                        style = 'failedbox'
+                    for record in ['cmd', 'resp', 'result']:
+                        output = json.dumps(test_result[record]).strip('"').replace('\\', '\\\\').strip()
+                        fh.write(record + ': :' + style + ':`' + output + '`' + 2*line_end)
+                    fh.write('----' + 2*line_end)
+                fh.write('End of test commands' + 2*line_end)
+        except:
+            print 'Error opening "%s"' % (filename)
+
 
 # def dump_port_list():
 #     if comports:
@@ -181,23 +218,41 @@ except serial.SerialException, e:
     sys.stderr.write("could not open port %r: %s\n" % (dev_name, e))
     sys.exit(1)
 
+config = {}
+with open('config.json', 'rt') as fh:
+    config = json.load(fh)
+if not 'test_cmds' in config:
+    config['test_cmds'] = []
+
 print "Start tester"
 tester.start()
 
 if not tester.sync_target('\033[0;32mnanomind#\033[0m ', 1.5, 0.5):
     print "Failed to initialise test"
 else:
-    tester.run_test_cmd('\n', '')
-    tester.run_test_cmd('help\n', 'rtc\r\nhelp\r\n')
-    tester.run_test_cmd('cmp ident\n', 'NanoMind\r\n.*\r\n')
-    tester.run_test_cmd('hmc5843 init\n', 'hmc5843 initialised\r\n')
-    tester.run_test_cmd('hmc5843 read\n', 'X: ([0-9\-\.]+) mG\r\nY: ([0-9\-\.]+) mG\r\nZ: ([0-9\-\.]+) mG\r\nMagnitude: ([0-9\-\.]+) mG')
-    tester.run_test_cmd('hmc5843 loop\n', 'hmc5843 initialised\r\n')
+    for test_cmd in config['test_cmds']:
+        #print json.dumps(test_cmd)
+        tester.run_test_cmd(test_cmd['cmd'], test_cmd['resp'])
+#     tester.run_test_cmd('\n', '')
+#     tester.run_test_cmd('help\n', 'rtc\r\nhelp\r\n')
+#     tester.run_test_cmd('cmp ident\n', 'NanoMind\r\n.*\r\n')
+#     tester.run_test_cmd('hmc5843 init\n', 'hmc5843 initialised\r\n')
+#     tester.run_test_cmd('hmc5843 read\n', 'X: ([0-9\-\.]+) mG\r\nY: ([0-9\-\.]+) mG\r\nZ: ([0-9\-\.]+) mG\r\nMagnitude: ([0-9\-\.]+) mG')
+#     tester.run_test_cmd('hmc5843 loop\n', 'hmc5843 initialised\r\n')
 
 print "Stop tester"
 
 tester.stop()
 
+print 'Generating test report'
 tester.dump_results('report.json')
+
+print 'Generating pdf report'
+if os.path.exists('report.pdf'):
+    os.remove('report.pdf')
+args = ['rst2pdf', 'report.rst', '-s', 'report.style', '-o', 'report.pdf']
+p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+for line in p.stdout.readlines():
+    print '##: ' + line
 
 print "Done"

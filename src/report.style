@@ -1,0 +1,16 @@
+styles:
+  okbox:
+    parent: bodytext
+    textColor: black
+    backColor: green
+    hyphenation: false
+    wordWrap: null
+    kerning: false
+  failedbox:
+    parent: bodytext
+    textColor: black
+    backColor: red
+    hyphenation: false
+    wordWrap: null
+    kerning: false
+

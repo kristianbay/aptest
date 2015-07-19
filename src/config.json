@@ -1,0 +1,28 @@
+{
+  "test_cmds": [
+    {
+      "resp": "", 
+      "cmd": "\n"
+    }, 
+    {
+      "resp": "rtc\r\nhelp\r\n", 
+      "cmd": "help\n"
+    }, 
+    {
+      "resp": "NanoMind\r\nv0.3\r\n", 
+      "cmd": "cmp ident\n"
+    }, 
+    {
+      "resp": "hmc5843 initialised\r\n", 
+      "cmd": "hmc5843 init\n"
+    }, 
+    {
+      "resp": "X: -123 mG\r\nY: -456 mG\r\nZ: -789 mG\r\nMagnitude: -123 mG\r\n", 
+      "cmd": "hmc5843 read\n"
+    }, 
+    {
+      "resp": "hmc5843 loop\r\n", 
+      "cmd": "hmc5843 loop\n"
+    }
+  ]
+}
