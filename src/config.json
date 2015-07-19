@@ -1,4 +1,5 @@
 {
+  "test_prompt": "\u001b[0;32mnanomind#\u001b[0m ",
   "test_cmds": [
     {
       "resp": "", 

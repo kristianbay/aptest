@@ -3,48 +3,21 @@ import subprocess
 import serial, threading
 import json
 
-if sys.version_info >= (3, 0):
-    def character(b):
-        return b.decode('latin1')
-else:
-    def character(b):
-        return b
-
-LF = serial.to_bytes([10])
-CR = serial.to_bytes([13])
-CRLF = serial.to_bytes([13, 10])
-
-CONVERT_CRLF = 2
-CONVERT_CR   = 1
-CONVERT_LF   = 0
-NEWLINE_CONVERSION_MAP = (LF, CR, CRLF)
-LF_MODES = ('LF', 'CR', 'CR/LF')
-
-REPR_MODES = ('raw', 'some control', 'all control', 'hex')
-
 class DeviceTester(object):
-    def __init__(self, port, baudrate, parity, rtscts=False, xonxoff=False, echo=False, convert_outgoing=CONVERT_CRLF, repr_mode=0):
+    def __init__(self, port, baudrate, parity):
         try:
-            self.serial = serial.serial_for_url(port, baudrate, parity=parity, rtscts=rtscts, xonxoff=xonxoff, timeout=1)
-            #self.serial = serial.serial_for_url(port, timeout=1)
+            self.serial = serial.serial_for_url(port, baudrate, parity=parity, rtscts=False, xonxoff=False, timeout=1)
         except AttributeError:
             # happens when the installed pyserial is older than 2.5. use the
-            # Serial class directly then.
-            print "Use serial.Serial"
-            self.serial = serial.Serial(port, baudrate, parity=parity, rtscts=rtscts, xonxoff=xonxoff, timeout=1)
-        self.echo = echo
-        self.repr_mode = repr_mode
-        self.convert_outgoing = convert_outgoing
-        self.newline = NEWLINE_CONVERSION_MAP[self.convert_outgoing]
-        self.dtr_state = True
-        self.rts_state = True
-        self.break_state = False
+            print "You must install serial version >= 2.5"
+            raise
         self.curr_data = ''
         self.prompt = '#'
         self.running = False
         self.un_sol_data = ''
         self.report = {'unsolicited':[], 'test_results':[]}
         self.is_ready = threading.Condition()
+        self.device_uid = 'DEADBEEFDEADBEEF'
 
     def _start_reader(self):
         """Start reader thread"""
@@ -171,7 +144,9 @@ class DeviceTester(object):
 
                 fh.write('Test report' + line_end)
                 fh.write('===========' + 2*line_end)
-                fh.write('Device under test: ' + 2*line_end)
+                fh.write('Device under test: ' + self.device_uid + 2*line_end)
+                output = json.dumps(self.prompt).strip('"').replace('\\', '\\\\').strip()
+                fh.write('Prompt: ' + output + '' + 2*line_end)
                 fh.write('Unsolicited' + line_end)
                 fh.write('***********' + 2*line_end)
                 for un_sol in self.report['unsolicited']:
@@ -196,63 +171,67 @@ class DeviceTester(object):
             print 'Error opening "%s"' % (filename)
 
 
-# def dump_port_list():
-#     if comports:
-#         sys.stderr.write('\n--- Available ports:\n')
-#         for port, desc, hwid in sorted(comports()):
-#             #~ sys.stderr.write('--- %-20s %s [%s]\n' % (port, desc, hwid))
-#             sys.stderr.write('--- %-20s %s\n' % (port, desc))
+import optparse
 
-try:
-    from serial.tools.list_ports import comports
-except ImportError:
-    comports = None
+if __name__ == "__main__":
+    parser = optparse.OptionParser()
+    parser.add_option("-d", "--device", dest="device", help="Serial IO device")
+    parser.add_option("-c", "--config", dest="config", default='config.json', help="Config file")
+    parser.add_option("-r", "--report", dest="report", default='report', help="Report file")
+    parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="Don't print status messages to stdout")
 
-dev_name = 'loop://'
-dev_name = 'socket://127.0.0.1:10000'
-print "Running serial version " + serial.VERSION + " connecting to " + dev_name
+    (options, args) = parser.parse_args()
 
-try:
-    tester = DeviceTester(dev_name, 500000, 'N')
-except serial.SerialException, e:
-    sys.stderr.write("could not open port %r: %s\n" % (dev_name, e))
-    sys.exit(1)
+    dev_name = 'loop://'
+    dev_name = 'socket://127.0.0.1:10000'
+    if options.device and options.device != '':
+        dev_name = options.device
 
-config = {}
-with open('config.json', 'rt') as fh:
-    config = json.load(fh)
-if not 'test_cmds' in config:
-    config['test_cmds'] = []
+    print "Running serial version " + serial.VERSION + " connecting to " + dev_name
+    
+    try:
+        tester = DeviceTester(dev_name, 500000, 'N')
+    except serial.SerialException, e:
+        sys.stderr.write("Could not open device %r: %s\n" % (dev_name, e))
+        sys.exit(1)
+    
+    config_file = options.config
+    print 'Loading config from: ' + config_file
+    config = {}
+    with open(config_file, 'rt') as fh:
+        config = json.load(fh)
+    if not 'test_cmds' in config:
+        config['test_cmds'] = []
+    if not 'test_prompt' in config:
+        config['test_prompt'] = ''
+    test_prompt = unicode(config['test_prompt'])
 
-print "Start tester"
-tester.start()
-
-if not tester.sync_target('\033[0;32mnanomind#\033[0m ', 1.5, 0.5):
-    print "Failed to initialise test"
-else:
-    for test_cmd in config['test_cmds']:
-        #print json.dumps(test_cmd)
-        tester.run_test_cmd(test_cmd['cmd'], test_cmd['resp'])
-#     tester.run_test_cmd('\n', '')
-#     tester.run_test_cmd('help\n', 'rtc\r\nhelp\r\n')
-#     tester.run_test_cmd('cmp ident\n', 'NanoMind\r\n.*\r\n')
-#     tester.run_test_cmd('hmc5843 init\n', 'hmc5843 initialised\r\n')
-#     tester.run_test_cmd('hmc5843 read\n', 'X: ([0-9\-\.]+) mG\r\nY: ([0-9\-\.]+) mG\r\nZ: ([0-9\-\.]+) mG\r\nMagnitude: ([0-9\-\.]+) mG')
-#     tester.run_test_cmd('hmc5843 loop\n', 'hmc5843 initialised\r\n')
-
-print "Stop tester"
-
-tester.stop()
-
-print 'Generating test report'
-tester.dump_results('report.json')
-
-print 'Generating pdf report'
-if os.path.exists('report.pdf'):
-    os.remove('report.pdf')
-args = ['rst2pdf', 'report.rst', '-s', 'report.style', '-o', 'report.pdf']
-p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-for line in p.stdout.readlines():
-    print '##: ' + line
-
-print "Done"
+#     print 'test_prompt: ' + test_prompt
+    
+    print "Start tester"
+    tester.start()
+    
+    if not tester.sync_target(test_prompt, 1.5, 0.5):
+        print "Failed to initialise test"
+    else:
+        for test_cmd in config['test_cmds']:
+            tester.run_test_cmd(test_cmd['cmd'], test_cmd['resp'])
+    
+    print "Stop tester"
+    
+    tester.stop()
+    
+    json_report = options.report + '.json'
+    print 'Generating test report: ' + json_report
+    tester.dump_results(json_report)
+    
+    pdf_report = options.report + '.pdf'
+    print 'Generating pdf report: ' + pdf_report
+    if os.path.exists(pdf_report):
+        os.remove(pdf_report)
+    args = ['rst2pdf', 'report.rst', '-s', 'report.style', '-o', pdf_report]
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    for line in p.stdout.readlines():
+        print '##: ' + line
+    
+    print "Done"
