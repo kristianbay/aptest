@@ -1,7 +1,12 @@
-import sys, time, re, os
+import os
+import sys
+import time
+import re
 import subprocess
-import serial, threading
+import threading
 import json
+import optparse
+import serial
 
 class DeviceTester(object):
     def __init__(self, port, baudrate, parity):
@@ -89,21 +94,26 @@ class DeviceTester(object):
             self.is_ready.wait(delta)
             self.is_ready.release()
             self.running = False
-            if self.curr_data == self.prompt:
+            #if self.curr_data == self.prompt:
+            if self.curr_data.endswith(self.prompt):
                 print "Ready, got prompt: " + self.curr_data #json.dumps(self.curr_data)
                 result = True
                 break
             else:
-                print "Not prompt: " + json.dumps(self.curr_data)
+                print "Not prompt: "
+                print json.dumps(self.curr_data)
+                print json.dumps('\r\n' + self.prompt)
             timeout -= delta
         return result
 
     def run_test_cmd(self, test_cmd, expected, prompt=True, timeout=1.5):
 #         print "run_test_cmd: [%s] [%s]" % (json.dumps(test_cmd), json.dumps(expected))
 #         print "run_test_cmd: [%s] [%s]" % (test_cmd, expected)
+        if type(expected) is list:
+            expected = '\r\n'.join(expected) + '\r\n'
         self.curr_data = ''
         self.running = True
-        self.write(str(test_cmd))
+        self.write(test_cmd.rstrip() + '\n')
         self.is_ready.acquire()
         self.is_ready.wait(timeout)
         self.is_ready.release()
@@ -114,14 +124,27 @@ class DeviceTester(object):
         compare_str = self.curr_data
         if prompt and compare_str.endswith(self.prompt):
             compare_str = compare_str[0:-len(self.prompt)]
+        compare_str = compare_str.replace('\n\r', '\r\n')
         if compare_str == expected:
             res_str = 'OK'
             result = True
-        elif expected != '' and re.match(expected, compare_str):
-            res_str = 'OK'
-            result = True
-        print '%s Exp: [%s] Got: [%s]' % (res_str, json.dumps(expected).strip('"'), json.dumps(compare_str).strip('"'))
-        self.report['test_results'].append({'ts':time.time(), 'result':res_str, 'cmd':test_cmd, 'resp':self.curr_data})
+        else:
+            expr = re.compile('([:|=]\s*)([0-9-.]+)')
+            (expected, cnt) = expr.subn('\g<1>([0-9-.]+)', expected)
+            if cnt > 0 and re.match(expected, compare_str):
+                res_str = 'OK (re)'
+                result = True
+#         elif expected != '' and re.match(expected, compare_str):
+#             res_str = 'OK (re)'
+#             result = True
+        #print '%s Exp: [%s] Got: [%s]' % (res_str, json.dumps(expected).strip('"'), json.dumps(compare_str).strip('"'))
+        if re.match('OK', res_str):
+            sys.stdout.write('\033[0;32m')
+        else:
+            sys.stdout.write('\033[0;31m')
+        print 'cmd: ' + test_cmd  + ' - ' + res_str
+        sys.stdout.write('\033[0m')
+        self.report['test_results'].append({'ts':time.time(), 'result':res_str, 'cmd':test_cmd, 'resp':compare_str, 'expected': expected})
         self.curr_data = ''
         return result
 
@@ -153,25 +176,61 @@ class DeviceTester(object):
                     output = json.dumps(un_sol['msg']).strip('"').replace('\\', '\\\\').strip()
                     fh.write('msg: : :failedbox:`' + output + '`' + 2*line_end)
                 fh.write(2*line_end)
+                
                 fh.write('Test commands and results' + line_end)
                 fh.write('*************************' + 2*line_end)
                 fh.write('List of test commands' + 2*line_end)
                 fh.write('----' + 2*line_end)
+                ok_cnt = 0
+                failed_cnt = 0
+                total_cnt = 0
+                fh.write('.. csv-table:: Test commands and results' + line_end)
+                fh.write('   :header: "Command", "Result"' + line_end)
+                fh.write('   :widths: 40, 10' + 2*line_end)
                 for test_result in self.report['test_results']:
-                    if test_result['result'] == 'OK':
+                    fh.write('   "' + test_result['cmd'] + '", "' + test_result['result'] + '"' + line_end)
+                    total_cnt += 1
+                    if re.match('OK', test_result['result']) != None:
+                        ok_cnt += 1
+                    else:
+                        failed_cnt += 1
+                fh.write(line_end)
+
+                fh.write('.. csv-table:: Summary of test commands' + line_end)
+                #fh.write('   :header: "Command", "Result"' + line_end)
+                fh.write('   :widths: 20, 10' + 2*line_end)
+                fh.write('   "Total test commands", "' + str(total_cnt) + '"' + line_end)
+                fh.write('   "OK test commands", "' + str(ok_cnt) + '"' + line_end)
+                fh.write('   "Failed test commands", "' + str(failed_cnt) + '"' + line_end)
+
+                fh.write(2*line_end)
+                fh.write('Test commands and results detailed' + line_end)
+                fh.write('**********************************' + 2*line_end)
+                fh.write('List of test commands' + 2*line_end)
+                fh.write('----' + 2*line_end)
+                for test_result in self.report['test_results']:
+                    if re.match('OK', test_result['result']) != None:
                         style = 'okbox'
                     else:
                         style = 'failedbox'
-                    for record in ['cmd', 'resp', 'result']:
+                    for record in ['cmd', 'result']:
                         output = json.dumps(test_result[record]).strip('"').replace('\\', '\\\\').strip()
-                        fh.write(record + ': :' + style + ':`' + output + '`' + 2*line_end)
+                        if output == '':
+                            fh.write(record + ': ' + 2*line_end)
+                        else:
+                            fh.write(record + ': :' + style + ':`' + output + '`' + 2*line_end)
+                    for record in ['resp', 'expected']:
+                        fh.write(record.title() + '::' +2*line_end)
+                        lines = test_result[record].split('\r\n')
+                        for line in lines:
+                            fh.write('   ' + line + line_end)
+                        fh.write(line_end)
+                        
                     fh.write('----' + 2*line_end)
-                fh.write('End of test commands' + 2*line_end)
+                fh.write('End of test report' + 2*line_end)
         except:
             print 'Error opening "%s"' % (filename)
 
-
-import optparse
 
 if __name__ == "__main__":
     parser = optparse.OptionParser()
@@ -235,3 +294,5 @@ if __name__ == "__main__":
         print '##: ' + line
     
     print "Done"
+    
+#[+-]?((\d+(\.\d*)?)

@@ -1,0 +1,251 @@
+{
+  "test_cmds": [
+    {
+      "resp": [
+        "help", 
+        "  adc                 ADC commands", 
+        "  rtc                 FM33256B RTC commands", 
+        "  hmc5883             HMC5883 commands", 
+        "  gyro                MPU3300 gyro commands", 
+        "  pwm                 PWM commands", 
+        "  spn                 spn_fl512s commands", 
+        "  temp                Read temperature sensors", 
+        "  pwrsw               Control Power Switches (on/off/status)", 
+        "  currents            Sample currents", 
+        "  gpio                Check GPIO pins", 
+        "  knives              Control knives", 
+        "  usart               Test USART 0-4", 
+        "  can                 Test CAN bus", 
+        "  ping                Send CSP ping", 
+        "  rps                 Remote ps", 
+        "  memfree             Memory free", 
+        "  buffree             Buffers", 
+        "  reboot              a subsystem", 
+        "  uptime              of subsystem", 
+        "  cmp                 CSP management protocol", 
+        "  route               Show routing table", 
+        "  ifc                 Show interfaces", 
+        "  conn                Show connection table", 
+        "  rdpopt              Set RDP options", 
+        "  help                Show help", 
+        "  sleep               Sleep X ms", 
+        "  watch               Run cmd at intervals, abort with key", 
+        "  batch               Run multiple commands", 
+        "  reset               Reset now", 
+        "  ps                  List tasks", 
+        "  peek                Dump memory", 
+        "  poke                Change memory", 
+        "  clock               Get system clock"
+      ], 
+      "cmd": "help"
+    }, 
+    {
+      "resp": [
+        "adc", 
+        "'adc' contains sub-commands:", 
+        "  read                Read"
+      ], 
+      "cmd": "adc"
+    }, 
+    {
+      "resp": [
+        "adc read", 
+        "ADC 0 = -3", 
+        "ADC 1 = -759", 
+        "ADC 2 = -35", 
+        "ADC 3 = 7", 
+        "ADC 4 = 8", 
+        "ADC 5 = -29", 
+        "ADC 6 = 1237", 
+        "ADC 7 = 1349", 
+        "ADC 8 = -8", 
+        "ADC 9 = -7", 
+        "ADC 10 = 30", 
+        "ADC 11 = -6"
+      ], 
+      "cmd": "adc read"
+    }, 
+    {
+      "resp": [
+        "currents", 
+        "Sample currents", 
+        "GPS           : 0 mA", 
+        "GPS BOARD 3.3V: 0 mA", 
+        "GPS BOARD   5V: 0 mA", 
+        "GAMALINK    5V: 3 mA", 
+        "ST200       5V: 3 mA", 
+        "RW1         5V: 0 mA", 
+        "ADC6          : 601 mA", 
+        "ADC7          : 659 mA", 
+        "ADC8          : 0 mA", 
+        "GSSB1         : 0 mA", 
+        "GSSB2         : 0 mA", 
+        "FLASH         : 14 mA"
+      ], 
+      "cmd": "currents"
+    }, 
+    {
+      "resp": [
+        "hmc5883 read", 
+        "X: -47.7 mG", 
+        "Y: -308.3 mG", 
+        "Z: -400.0 mG", 
+        "Magnitude: 507.2 mG"
+      ], 
+      "cmd": "hmc5883 read"
+    }, 
+    {
+      "resp": [
+        "rtc", 
+        "'rtc' contains sub-commands:", 
+        "  clock               Clock subcommands", 
+        "  debug               Debug subcommands", 
+        "  data                Data subcommands"
+      ], 
+      "cmd": "rtc"
+    }, 
+    {
+      "resp": [
+        "rtc clock", 
+        "'rtc clock' contains sub-commands:", 
+        "  set                 Set RTC", 
+        "  get                 Get current RTC value"
+      ], 
+      "cmd": "rtc clock"
+    }, 
+    {
+      "resp": [
+        "rtc clock set 1400000000"
+      ], 
+      "cmd": "rtc clock set 1400000000"
+    }, 
+    {
+      "resp": [
+        "rtc clock get", 
+        "Time is: Tue May 13 16:53:25 2014"
+      ], 
+      "cmd": "rtc clock get"
+    }, 
+    {
+      "resp": [
+        "rtc debug", 
+        "'rtc debug' contains sub-commands:", 
+        "  SR                  Read Status Reg.", 
+        "  clkresume           Oscillator Enable.", 
+        "  clkhalt             Oscillator Disable.", 
+        "  readreg             Read a register", 
+        "  writereg            Write a register"
+      ], 
+      "cmd": "rtc debug"
+    }, 
+    {
+      "resp": [
+        "rtc debug SR", 
+        "Status reg: 64"
+      ], 
+      "cmd": "rtc debug SR"
+    }, 
+    {
+      "resp": [
+        "rtc debug clkresume"
+      ], 
+      "cmd": "rtc debug clkresume"
+    }, 
+    {
+      "resp": [
+        "rtc debug clkhalt"
+      ], 
+      "cmd": "rtc debug clkhalt"
+    }, 
+    {
+      "resp": [
+        "rtc debug clkresume"
+      ], 
+      "cmd": "rtc debug clkresume"
+    }, 
+    {
+      "resp": [
+        "rtc debug readreg", 
+        "usage: readreg <reg_addr_hex>", 
+        "Could not execute command 'rtc debug readreg', error -2"
+      ], 
+      "cmd": "rtc debug readreg"
+    }, 
+    {
+      "resp": [
+        "rtc debug readreg 00", 
+        "Reg 0: 0"
+      ], 
+      "cmd": "rtc debug readreg 00"
+    }, 
+    {
+      "resp": [
+        "rtc", 
+        "'rtc' contains sub-commands:", 
+        "  clock               Clock subcommands", 
+        "  debug               Debug subcommands", 
+        "  data                Data subcommands"
+      ], 
+      "cmd": "rtc"
+    }, 
+    {
+      "resp": [
+        "rtc data write 100 00000000"
+      ], 
+      "cmd": "rtc data write 100 00000000"
+    }, 
+    {
+      "resp": [
+        "rtc data read 100", 
+        "100", 
+        "0xc984 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc994 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9a4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9b4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9c4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9d4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9e4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9f4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca04 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca14 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca24 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca34 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca44 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca54 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca64 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca74 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|"
+      ], 
+      "cmd": "rtc data read 100"
+    }, 
+    {
+      "resp": [
+        "rtc data write 100 deadbeef"
+      ], 
+      "cmd": "rtc data write 100 deadbeef"
+    }, 
+    {
+      "resp": [
+        "rtc data read 100", 
+        "100", 
+        "0xc984 : DE AD BE EF 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc994 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9a4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9b4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9c4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9d4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9e4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xc9f4 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca04 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca14 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca24 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca34 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca44 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca54 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca64 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|", 
+        "0xca74 : 00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|"
+      ], 
+      "cmd": "rtc data read 100"
+    }
+  ], 
+  "test_prompt": "\u001b[1;32mnanohub-ex\u001b[1;30m # \u001b[0m\u001b[0m"
+}
