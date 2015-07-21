@@ -188,12 +188,14 @@ class DeviceTester(object):
                 fh.write('   :header: "Command", "Result"' + line_end)
                 fh.write('   :widths: 40, 10' + 2*line_end)
                 for test_result in self.report['test_results']:
-                    fh.write('   "' + test_result['cmd'] + '", "' + test_result['result'] + '"' + line_end)
                     total_cnt += 1
                     if re.match('OK', test_result['result']) != None:
+                        style = 'okbox'
                         ok_cnt += 1
                     else:
+                        style = 'failedbox'
                         failed_cnt += 1
+                    fh.write('   "' + test_result['cmd'] + '", "\'\\ :' + style + ':`' + test_result['result'] + '`\\ \'"' + line_end)
                 fh.write(line_end)
 
                 fh.write('.. csv-table:: Summary of test commands' + line_end)
