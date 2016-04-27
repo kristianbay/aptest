@@ -153,7 +153,7 @@ class DeviceTester(object):
             for (exp_line, cmp_line) in zip(tmp_e, tmp_c):
                 if exp_line == cmp_line:
                     continue
-                for repl in '(){}[]|%-<>':
+                for repl in '(){}[]|%-+<>':
                     exp_line = exp_line.replace(repl, '\\' + repl)
                 expr = re.compile('([:|=\( ]\s*)([+|-]*[0-9.]+)')
                 (exp_line, cnt) = expr.subn('\g<1>([+|-]*[0-9.]+)', exp_line)
@@ -321,8 +321,8 @@ if __name__ == "__main__":
     
     tester.stop()
     
-    json_report = options.report + '.json'
-    rst_report = options.report + '.rst'
+    json_report = 'report.json'
+    rst_report = 'report.rst'
     print 'Generating test report: ' + json_report
     tester.dump_results(rst_report, json_report)
     

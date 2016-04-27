@@ -15,8 +15,10 @@ def process_monitor(process, prefix):
         print prefix + line
 
 def serial_reader(prompt, output):
+    global serial_port
+
     """loop and copy serial->socket"""
-    serial_port.write('\n')
+    #serial_port.write('\n')
     try:
         input_str = ''
         while True:
@@ -53,17 +55,17 @@ def serial_reader(prompt, output):
         print e
 
 if __name__ == "__main__":
+    global serial_port
+
     parser = optparse.OptionParser()
-    parser.add_option("-d", "--device", dest="device", help="Serial IO device")
+    parser.add_option("-d", "--device", dest="device", default='/dev/ttyUSB0', help="Serial IO device")
     parser.add_option("-p", "--port", dest="port", default='./ttyUSB1', help="Serial port to provide")
     parser.add_option("-o", "--output", dest="output", default='output.json', help="Output json file")
     parser.add_option("-q", "--quiet", action="store_false", dest="verbose", default=True, help="Don't print status messages to stdout")
 
     (options, args) = parser.parse_args()
 
-    dev_name = '/dev/ttyUSB0'
-    if options.device and options.device != '':
-        dev_name = options.device
+    dev_name = options.device
     serial_port = serial.serial_for_url(dev_name, 500000, parity='N', rtscts=False, xonxoff=False, timeout=1)
 
     provide_port = './ttyUSB1'

@@ -1,0 +1,1113 @@
+{
+  "test_cmds": [
+    {
+      "resp": [
+        "help", 
+        "  epsdebug\t\t\tEPS debug", 
+        "  conf\t\t\tEEPROM config", 
+        "  board\t\t\tBoard setup", 
+        "  ping\t\t\tSend CSP ping", 
+        "  rps\t\t\tRemote ps", 
+        "  memfree\t\t\tMemory free", 
+        "  buffree\t\t\tBuffers", 
+        "  reboot\t\t\ta subsystem", 
+        "  uptime\t\t\tof subsystem", 
+        "  cmp\t\t\tCSP management protocol", 
+        "  route\t\t\tShow routing table", 
+        "  ifc\t\t\tShow interfaces", 
+        "  conn\t\t\tShow connection table", 
+        "  debug\t\t\tToggle CSP debug levels ON/OFF", 
+        "  eps\t\t\tEPS subsystem", 
+        "  help\t\t\tShow help", 
+        "  sleep\t\t\tSleep X ms", 
+        "  watch\t\t\tRun cmd at intervals, abort with key", 
+        "  tdebug\t\t\tToggle driver debug", 
+        "  batch\t\t\tRun multiple commands", 
+        "  reset\t\t\tReset now", 
+        "  ps\t\t\tList tasks", 
+        "  peek\t\t\tDump memory", 
+        "  poke\t\t\tChange memory", 
+        "  stats\t\t\tGet runtime stats"
+      ], 
+      "cmd": "help"
+    }, 
+    {
+      "resp": [
+        "epsdebug", 
+        "'epsdebug' contains sub-commands:", 
+        "  powersweep\t\t\tDo power sweep of solar panel", 
+        "  dac\t\t\tGet/Set dac", 
+        "  log\t\t\tStart logging"
+      ], 
+      "cmd": "epsdebug"
+    }, 
+    {
+      "resp": [
+        "conf", 
+        "'conf' contains sub-commands:", 
+        "  restore\t\t\tConfiguration restore", 
+        "  store_default\t\t\tStore configuration as default", 
+        "  restore2\t\t\tConfiguration restore", 
+        "  store_default2\t\t\tStore configuration 2 as default"
+      ], 
+      "cmd": "conf"
+    }, 
+    {
+      "resp": [
+        "board", 
+        "'board' contains sub-commands:", 
+        "  getuid\t\t\tGet product UID", 
+        "  heaterquadbat\t\t\tSet/Get heater on quadbat", 
+        "  heateronboard\t\t\tSet/Get heater onboard", 
+        "  wdti2c\t\t\tSet/get wdt i2c", 
+        "  wdti2c_rst\t\t\tSet/get wdt i2c reset type", 
+        "  wdtgnd\t\t\tSet/get wdt gnd", 
+        "  wdtcsp\t\t\tSet/get wdt csp", 
+        "  i2cslave\t\t\tSet/get i2c slave", 
+        "  i2cspeed\t\t\tSet/get i2c speed (khz)", 
+        "  i2caddr\t\t\tSet/get i2c addr", 
+        "  cspaddr\t\t\tSet/get csp addr", 
+        "  csp_route_save\t\t\tSave routing table to flash", 
+        "  csp_route_load\t\t\tLoad routing table from flash", 
+        "  csp_route_restore\t\t\tRestore to factory routing table in flash"
+      ], 
+      "cmd": "board"
+    }, 
+    {
+      "resp": [
+        "ping 2 100", 
+        "Ping name 2, timeout 100, size 1: Reply in ([0-9<]+) (tick|ms)"
+      ], 
+      "regex": true, 
+      "cmd": "ping 2 100"
+    }, 
+    {
+      "resp": [
+        "rps 2 100", 
+        "PS node 2: ", 
+        "NOMEM", 
+        "Not enough memory"
+      ], 
+      "cmd": "rps 2 100"
+    }, 
+    {
+      "resp": [
+        "memfree 2 100", 
+        "NOMEM", 
+        "NOMEM", 
+        "NOMEM", 
+        "NOMEM", 
+        "NOMEM", 
+        "NOMEM", 
+        "NOMEM", 
+        "NOMEM", 
+        "Free Memory at node 2 is 39 bytes"
+      ], 
+      "cmd": "memfree 2 100"
+    }, 
+    {
+      "resp": [
+        "buffree 2 100", 
+        "Free buffers at node 2 is 3"
+      ], 
+      "cmd": "buffree 2 100"
+    }, 
+    {
+      "resp": [
+        "cmp", 
+        "'cmp' contains sub-commands:", 
+        "  ident\t\t\tNode id", 
+        "  route_set\t\t\tUpdate table", 
+        "  ifc\t\t\tRemote IFC", 
+        "  peek\t\t\tShow remote memory", 
+        "  poke\t\t\tModify remote memory", 
+        "  clock\t\t\tGet/Set clock, get t=0, setsys t=-1"
+      ], 
+      "cmd": "cmp"
+    }, 
+    {
+      "resp": [
+        "route", 
+        "Node  Interface  Address", 
+        "   1  I2C        1", 
+        "   2  LOOP       2", 
+        "   3  I2C        3", 
+        "   4  I2C        4", 
+        "   5  I2C        5", 
+        "   6  I2C        6", 
+        "   7  I2C        7", 
+        "   *  I2C        5"
+      ], 
+      "cmd": "route"
+    }, 
+    {
+      "resp": [
+        "eps", 
+        "'eps' contains sub-commands:", 
+        "  node\t\t\tSet EPS address in OBC host table", 
+        "  hk\t\t\tGet HK", 
+        "  hksub\t\t\tGet HK sub structs", 
+        "  conf\t\t\tConfiguration", 
+        "  conf2\t\t\tConfiguration 2", 
+        "  outputmask\t\t\tSet on/off, argument hex value of output char", 
+        "  output\t\t\tSet channel on/off, argument (channel) to (1 or 0)<channel> <mode> <delay>", 
+        "  resetcounters\t\t\tReset all counters to zero", 
+        "  resetwdt\t\t\tResets the WDT GND", 
+        "  hardreset\t\t\tCompletely powercycle EPS", 
+        "  ppt\t\t\tchange current PPT mode", 
+        "  heater\t\t\tget/set heater state", 
+        "  vboost\t\t\tchange current VBOOST voltage"
+      ], 
+      "cmd": "eps"
+    }, 
+    {
+      "resp": [
+        "eps node 2"
+      ], 
+      "cmd": "eps node 2"
+    }, 
+    {
+      "resp": [
+        "eps hk", 
+        "                    _________", 
+        "                   |         |                           I(mA),  lup,Ton(s),Toff(s)", 
+        "              +-------------------+  0 (H1-47) --> EN:1 [    6,    0,     0,      0]", 
+        "  1:          |                   |", 
+        "  360 mV ->   |  Voltage          |  1 (H1-49) --> EN:1 [    4,    0,     0,      0]", 
+        "    0 mA ->   | 08228 mV          |", 
+        "    0 mW ->   |                   |  2 (H1-51) --> EN:1 [    0,    0,     0,      0]", 
+        "  2:          |  Input            |", 
+        "  379 mV ->   | 00034 mA 00279 mW |  3 (H1-48) --> EN:1 [    0,    0,     0,      0]", 
+        "    0 mA ->   |                   |", 
+        "    0 mW ->   |  Output           |  4 (H1-50) --> EN:1 [    1,    0,     0,      0]", 
+        "  3:          | 00004 mA 00032 mW |", 
+        "  350 mV ->   |                   |  5 (H1-52) --> EN:1 [   39,    0,     0,      0]", 
+        "   20 mA ->   |  Efficiency:      |", 
+        "    7 mW ->   |  In: 99 %         |  6         --> EN:0", 
+        "              |                   |", 
+        "              |  Normal           |  7         --> EN:0", 
+        "              +-------------------+\r", 
+        "\n            1       2       3       4       5       6", 
+        " Temp:    +22     +24     +23     +23      +0      +0\r", 
+        "\n          Boot   Cause    PPTm", 
+        " Count:     10       7       2\r", 
+        "\n        WDTi2c  WDTgnd WDTcsp0 WDTcsp1", 
+        " Count:      0       0       0       0", 
+        "  Left:      0       0       5       5\r"
+      ], 
+      "cmd": "eps hk"
+    }, 
+    {
+      "resp": [
+        "eps hksub", 
+        "'eps hksub' contains sub-commands:", 
+        "  vi\t\t\tGet Voltages and Currents", 
+        "  out\t\t\tGet output switch data", 
+        "  wdt\t\t\tGet wdt data", 
+        "  basic\t\t\tGet basic housekeeping data"
+      ], 
+      "cmd": "eps hksub"
+    }, 
+    {
+      "resp": [
+        "eps hksub vi", 
+        "Vbatt 8228mV", 
+        "Isun 34mA (279.75 mW)", 
+        "Isys 4mA (32.91 mW)", 
+        "boost[1] 360mV 0mA (0.00 mW)", 
+        "boost[2] 379mV 0mA (0.00 mW)", 
+        "boost[3] 350mV 20mA (7.00 mW)", 
+        "Input Eff: 3996.46 %"
+      ], 
+      "cmd": "eps hksub vi"
+    }, 
+    {
+      "resp": [
+        "eps hksub out", 
+        "OUTPUT[1] En: 1, Iout: 6mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[2] En: 1, Iout: 4mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[3] En: 1, Iout: 0mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[4] En: 1, Iout: 0mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[5] En: 1, Iout: 1mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[6] En: 1, Iout: 36mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[7] En: 0, Ton:0, Toff: 0", 
+        "OUTPUT[8] En: 0, Ton:0, Toff: 0"
+      ], 
+      "cmd": "eps hksub out"
+    }, 
+    {
+      "resp": [
+        "eps hksub wdt", 
+        "        WDTi2c  WDTgnd WDTcsp0 WDTcsp1", 
+        " Count:      0       0       0       0", 
+        "  Left:      0       0       5       5\r"
+      ], 
+      "cmd": "eps hksub wdt"
+    }, 
+    {
+      "resp": [
+        "h", 
+        "Unknown command 'h'"
+      ], 
+      "cmd": "h"
+    }, 
+    {
+      "resp": [
+        "epsdebug", 
+        "'epsdebug' contains sub-commands:", 
+        "  powersweep\t\t\tDo power sweep of solar panel", 
+        "  dac\t\t\tGet/Set dac", 
+        "  log\t\t\tStart logging"
+      ], 
+      "cmd": "epsdebug"
+    }, 
+    {
+      "resp": [
+        "epsdebug powersweep", 
+        "usage: powersweep <channel>", 
+        "Could not execute command 'epsdebug powersweep', error -2"
+      ], 
+      "cmd": "epsdebug powersweep"
+    }, 
+    {
+      "resp": [
+        "epsdebug dac 0", 
+        "DAC values  1556, 1556, 1556"
+      ], 
+      "cmd": "epsdebug dac 0"
+    }, 
+    {
+      "resp": [
+        "conf", 
+        "'conf' contains sub-commands:", 
+        "  restore\t\t\tConfiguration restore", 
+        "  store_default\t\t\tStore configuration as default", 
+        "  restore2\t\t\tConfiguration restore", 
+        "  store_default2\t\t\tStore configuration 2 as default"
+      ], 
+      "cmd": "conf"
+    }, 
+    {
+      "resp": [
+        "conf restore"
+      ], 
+      "cmd": "conf restore"
+    }, 
+    {
+      "resp": [
+        "conf store_default"
+      ], 
+      "cmd": "conf store_default"
+    }, 
+    {
+      "resp": [
+        "conf restore2"
+      ], 
+      "cmd": "conf restore2"
+    }, 
+    {
+      "resp": [
+        "conf store_default2"
+      ], 
+      "cmd": "conf store_default2"
+    }, 
+    {
+      "resp": [
+        "board", 
+        "'board' contains sub-commands:", 
+        "  getuid\t\t\tGet product UID", 
+        "  heaterquadbat\t\t\tSet/Get heater on quadbat", 
+        "  heateronboard\t\t\tSet/Get heater onboard", 
+        "  wdti2c\t\t\tSet/get wdt i2c", 
+        "  wdti2c_rst\t\t\tSet/get wdt i2c reset type", 
+        "  wdtgnd\t\t\tSet/get wdt gnd", 
+        "  wdtcsp\t\t\tSet/get wdt csp", 
+        "  i2cslave\t\t\tSet/get i2c slave", 
+        "  i2cspeed\t\t\tSet/get i2c speed (khz)", 
+        "  i2caddr\t\t\tSet/get i2c addr", 
+        "  cspaddr\t\t\tSet/get csp addr", 
+        "  csp_route_save\t\t\tSave routing table to flash", 
+        "  csp_route_load\t\t\tLoad routing table from flash", 
+        "  csp_route_restore\t\t\tRestore to factory routing table in flash"
+      ], 
+      "cmd": "board"
+    }, 
+    {
+      "resp": [
+        "board getuid", 
+        "Uid is "
+      ], 
+      "cmd": "board getuid"
+    }, 
+    {
+      "resp": [
+        "board heaterquadbat 0", 
+        "0=Disable, 1=Enable", 
+        "heater quadbat enable: 0"
+      ], 
+      "cmd": "board heaterquadbat 0"
+    }, 
+    {
+      "resp": [
+        "board heaterquadbat 1", 
+        "0=Disable, 1=Enable", 
+        "heater quadbat enable: 1"
+      ], 
+      "cmd": "board heaterquadbat 1"
+    }, 
+    {
+      "resp": [
+        "board heaterquadbat 0", 
+        "0=Disable, 1=Enable", 
+        "heater quadbat enable: 0"
+      ], 
+      "cmd": "board heaterquadbat 0"
+    }, 
+    {
+      "resp": [
+        "board heateronboard 1", 
+        "0=Disable, 1=Enable", 
+        "heater onboard enable: 1"
+      ], 
+      "cmd": "board heateronboard 1"
+    }, 
+    {
+      "resp": [
+        "board heateronboard 0", 
+        "0=Disable, 1=Enable", 
+        "heater onboard enable: 0"
+      ], 
+      "cmd": "board heateronboard 0"
+    }, 
+    {
+      "resp": [
+        "board wdti2c", 
+        "wdt i2c: 0 s"
+      ], 
+      "cmd": "board wdti2c"
+    }, 
+    {
+      "resp": [
+        "board wdti2c_rst 0", 
+        "i2c wdt reset type 0=soft,1=hard : 0"
+      ], 
+      "cmd": "board wdti2c_rst 0"
+    }, 
+    {
+      "resp": [
+        "board wdti2c_rst 1", 
+        "i2c wdt reset type 0=soft,1=hard : 1"
+      ], 
+      "cmd": "board wdti2c_rst 1"
+    }, 
+    {
+      "resp": [
+        "board wdti2c_rst 0", 
+        "i2c wdt reset type 0=soft,1=hard : 0"
+      ], 
+      "cmd": "board wdti2c_rst 0"
+    }, 
+    {
+      "resp": [
+        "board wdtgnd", 
+        "Note: Dedicated WDT will be rounded up to nearest hour. It cannot be set lower than 1 hour.", 
+        "wdt gnd: 0 s"
+      ], 
+      "cmd": "board wdtgnd"
+    }, 
+    {
+      "resp": [
+        "board wdtgnd 1", 
+        "Note: Dedicated WDT will be rounded up to nearest hour. It cannot be set lower than 1 hour.", 
+        "wdt gnd: 3600 s"
+      ], 
+      "cmd": "board wdtgnd 1"
+    }, 
+    {
+      "resp": [
+        "baord wdtgnd 0", 
+        "Unknown command 'baord wdtgnd 0'"
+      ], 
+      "cmd": "baord wdtgnd 0"
+    }, 
+    {
+      "resp": [
+        "board wdtgnd 0", 
+        "Note: Dedicated WDT will be rounded up to nearest hour. It cannot be set lower than 1 hour.", 
+        "wdt gnd: 0 s"
+      ], 
+      "cmd": "board wdtgnd 0"
+    }, 
+    {
+      "resp": [
+        "board wdtcsp", 
+        "wdt csp 0: chnl 0 cspadd 0", 
+        "wdt csp 1: chnl 0 cspadd 0"
+      ], 
+      "cmd": "board wdtcsp"
+    }, 
+    {
+      "resp": [
+        "board wdtcsp 0 2 3", 
+        "wdt csp 0: chnl 2 cspadd 3", 
+        "wdt csp 1: chnl 0 cspadd 0"
+      ], 
+      "cmd": "board wdtcsp 0 2 3"
+    }, 
+    {
+      "resp": [
+        "board wdtcsp 1 4 5", 
+        "wdt csp 0: chnl 2 cspadd 3", 
+        "wdt csp 1: chnl 4 cspadd 5"
+      ], 
+      "cmd": "board wdtcsp 1 4 5"
+    }, 
+    {
+      "resp": [
+        "board wdtcsp 0 0 0", 
+        "wdt csp 0: chnl 0 cspadd 0", 
+        "wdt csp 1: chnl 4 cspadd 5"
+      ], 
+      "cmd": "board wdtcsp 0 0 0"
+    }, 
+    {
+      "resp": [
+        "board wdtcsp 1 0 0", 
+        "wdt csp 0: chnl 0 cspadd 0", 
+        "wdt csp 1: chnl 0 cspadd 0"
+      ], 
+      "cmd": "board wdtcsp 1 0 0"
+    }, 
+    {
+      "resp": [
+        "csp_route_save", 
+        "Unknown command 'csp_route_save'"
+      ], 
+      "cmd": "csp_route_save"
+    }, 
+    {
+      "resp": [
+        "board csp_route_save"
+      ], 
+      "cmd": "board csp_route_save"
+    }, 
+    {
+      "resp": [
+        "board csp_route_load"
+      ], 
+      "cmd": "board csp_route_load"
+    }, 
+    {
+      "resp": [
+        "board csp_route_restore"
+      ], 
+      "cmd": "board csp_route_restore"
+    }, 
+    {
+      "resp": [
+        "board i2cslave", 
+        "i2c slave: 0"
+      ], 
+      "cmd": "board i2cslave"
+    }, 
+    {
+      "resp": [
+        "board i2cslave 1", 
+        "i2c slave: 1"
+      ], 
+      "cmd": "board i2cslave 1"
+    }, 
+    {
+      "resp": [
+        "board i2cslave 0", 
+        "i2c slave: 0"
+      ], 
+      "cmd": "board i2cslave 0"
+    }, 
+    {
+      "resp": [
+        "board i2cspeed", 
+        "i2c speed: 400"
+      ], 
+      "cmd": "board i2cspeed"
+    }, 
+    {
+      "resp": [
+        "board i2cspeed 400", 
+        "i2c speed: 400"
+      ], 
+      "cmd": "board i2cspeed 400"
+    }, 
+    {
+      "resp": [
+        "board i2caddr", 
+        "i2c addr: 2"
+      ], 
+      "cmd": "board i2caddr"
+    }, 
+    {
+      "resp": [
+        "board i2cadr 2", 
+        "Unknown command 'board i2cadr 2'"
+      ], 
+      "cmd": "board i2cadr 2"
+    }, 
+    {
+      "resp": [
+        "board i2caddr 2", 
+        "i2c addr: 2"
+      ], 
+      "cmd": "board i2caddr 2"
+    }, 
+    {
+      "resp": [
+        "board csp_addr", 
+        "Unknown command 'board csp_addr'"
+      ], 
+      "cmd": "board csp_addr"
+    }, 
+    {
+      "resp": [
+        "board cspaddr", 
+        "csp addr: 2"
+      ], 
+      "cmd": "board cspaddr"
+    }, 
+    {
+      "resp": [
+        "board cspaddr 2", 
+        "csp addr: 2"
+      ], 
+      "cmd": "board cspaddr 2"
+    }, 
+    {
+      "resp": [
+        "board", 
+        "'board' contains sub-commands:", 
+        "  getuid\t\t\tGet product UID", 
+        "  heaterquadbat\t\t\tSet/Get heater on quadbat", 
+        "  heateronboard\t\t\tSet/Get heater onboard", 
+        "  wdti2c\t\t\tSet/get wdt i2c", 
+        "  wdti2c_rst\t\t\tSet/get wdt i2c reset type", 
+        "  wdtgnd\t\t\tSet/get wdt gnd", 
+        "  wdtcsp\t\t\tSet/get wdt csp", 
+        "  i2cslave\t\t\tSet/get i2c slave", 
+        "  i2cspeed\t\t\tSet/get i2c speed (khz)", 
+        "  i2caddr\t\t\tSet/get i2c addr", 
+        "  cspaddr\t\t\tSet/get csp addr", 
+        "  csp_route_save\t\t\tSave routing table to flash", 
+        "  csp_route_load\t\t\tLoad routing table from flash", 
+        "  csp_route_restore\t\t\tRestore to factory routing table in flash"
+      ], 
+      "cmd": "board"
+    }, 
+    {
+      "resp": [
+        "eps", 
+        "'eps' contains sub-commands:", 
+        "  node\t\t\tSet EPS address in OBC host table", 
+        "  hk\t\t\tGet HK", 
+        "  hksub\t\t\tGet HK sub structs", 
+        "  conf\t\t\tConfiguration", 
+        "  conf2\t\t\tConfiguration 2", 
+        "  outputmask\t\t\tSet on/off, argument hex value of output char", 
+        "  output\t\t\tSet channel on/off, argument (channel) to (1 or 0)<channel> <mode> <delay>", 
+        "  resetcounters\t\t\tReset all counters to zero", 
+        "  resetwdt\t\t\tResets the WDT GND", 
+        "  hardreset\t\t\tCompletely powercycle EPS", 
+        "  ppt\t\t\tchange current PPT mode", 
+        "  heater\t\t\tget/set heater state", 
+        "  vboost\t\t\tchange current VBOOST voltage"
+      ], 
+      "cmd": "eps"
+    }, 
+    {
+      "resp": [
+        "eps node", 
+        "usage: node <node>", 
+        "Could not execute command 'eps node', error -2"
+      ], 
+      "cmd": "eps node"
+    }, 
+    {
+      "resp": [
+        "eps node 2"
+      ], 
+      "cmd": "eps node 2"
+    }, 
+    {
+      "resp": [
+        "eps hk", 
+        "                    _________", 
+        "                   |         |                           I(mA),  lup,Ton(s),Toff(s)", 
+        "              +-------------------+  0 (H1-47) --> EN:1 [    6,    0,     0,      0]", 
+        "  1:          |                   |", 
+        "  369 mV ->   |  Voltage          |  1 (H1-49) --> EN:1 [    4,    0,     0,      0]", 
+        "    0 mA ->   | 08137 mV          |", 
+        "    0 mW ->   |                   |  2 (H1-51) --> EN:1 [    0,    0,     0,      0]", 
+        "  2:          |  Input            |", 
+        "  388 mV ->   | 00034 mA 00276 mW |  3 (H1-48) --> EN:1 [    0,    0,     0,      0]", 
+        "    0 mA ->   |                   |", 
+        "    0 mW ->   |  Output           |  4 (H1-50) --> EN:1 [    1,    0,     0,      0]", 
+        "  3:          | 00000 mA 00000 mW |", 
+        "  369 mV ->   |                   |  5 (H1-52) --> EN:1 [    8,    0,     0,      0]", 
+        "   23 mA ->   |  Efficiency:      |", 
+        "    8 mW ->   |  In: 99 %         |  6         --> EN:0", 
+        "              |                   |", 
+        "              |  Normal           |  7         --> EN:0", 
+        "              +-------------------+\r", 
+        "\n            1       2       3       4       5       6", 
+        " Temp:    +24     +25     +25     +24      +0      +0\r", 
+        "\n          Boot   Cause    PPTm", 
+        " Count:      2       7       2\r", 
+        "\n        WDTi2c  WDTgnd WDTcsp0 WDTcsp1", 
+        " Count:      0       0       0       0", 
+        "  Left:      0       0       5       5\r"
+      ], 
+      "cmd": "eps hk"
+    }, 
+    {
+      "resp": [
+        "eps hksub", 
+        "'eps hksub' contains sub-commands:", 
+        "  vi\t\t\tGet Voltages and Currents", 
+        "  out\t\t\tGet output switch data", 
+        "  wdt\t\t\tGet wdt data", 
+        "  basic\t\t\tGet basic housekeeping data"
+      ], 
+      "cmd": "eps hksub"
+    }, 
+    {
+      "resp": [
+        "eps hksub vi", 
+        "Vbatt 8137mV", 
+        "Isun 34mA (276.66 mW)", 
+        "Isys 1mA (8.14 mW)", 
+        "boost[1] 379mV 0mA (0.00 mW)", 
+        "boost[2] 388mV 0mA (0.00 mW)", 
+        "boost[3] 369mV 23mA (8.49 mW)", 
+        "Input Eff: 3259.79 %"
+      ], 
+      "cmd": "eps hksub vi"
+    }, 
+    {
+      "resp": [
+        "eps hksub vi", 
+        "Vbatt 8137mV", 
+        "Isun 34mA (276.66 mW)", 
+        "Isys 1mA (8.14 mW)", 
+        "boost[1] 369mV 0mA (0.00 mW)", 
+        "boost[2] 388mV 0mA (0.00 mW)", 
+        "boost[3] 369mV 20mA (7.38 mW)", 
+        "Input Eff: 3748.75 %"
+      ], 
+      "cmd": "eps hksub vi"
+    }, 
+    {
+      "resp": [
+        "eps hksub out", 
+        "OUTPUT[1] En: 1, Iout: 6mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[2] En: 1, Iout: 4mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[3] En: 1, Iout: 0mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[4] En: 1, Iout: 0mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[5] En: 1, Iout: 1mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[6] En: 1, Iout: 8mA, latchups: 0, Ton:0, Toff: 0", 
+        "OUTPUT[7] En: 0, Ton:0, Toff: 0", 
+        "OUTPUT[8] En: 0, Ton:0, Toff: 0"
+      ], 
+      "cmd": "eps hksub out"
+    }, 
+    {
+      "resp": [
+        "eps hksub wdt", 
+        "        WDTi2c  WDTgnd WDTcsp0 WDTcsp1", 
+        " Count:      0       0       0       0", 
+        "  Left:      0       0       5       5\r"
+      ], 
+      "cmd": "eps hksub wdt"
+    }, 
+    {
+      "resp": [
+        "esp hksub basic", 
+        "Unknown command 'esp hksub basic'"
+      ], 
+      "cmd": "esp hksub basic"
+    }, 
+    {
+      "resp": [
+        "eps hksub basic", 
+        "            1       2       3       4       5       6", 
+        " Temp:    +24     +25     +25     +24      +0      +0\r", 
+        "\n          Boot   Cause    PPTm", 
+        " Count:      2       7       2\r"
+      ], 
+      "cmd": "eps hksub basic"
+    }, 
+    {
+      "resp": [
+        "eps", 
+        "'eps' contains sub-commands:", 
+        "  node\t\t\tSet EPS address in OBC host table", 
+        "  hk\t\t\tGet HK", 
+        "  hksub\t\t\tGet HK sub structs", 
+        "  conf\t\t\tConfiguration", 
+        "  conf2\t\t\tConfiguration 2", 
+        "  outputmask\t\t\tSet on/off, argument hex value of output char", 
+        "  output\t\t\tSet channel on/off, argument (channel) to (1 or 0)<channel> <mode> <delay>", 
+        "  resetcounters\t\t\tReset all counters to zero", 
+        "  resetwdt\t\t\tResets the WDT GND", 
+        "  hardreset\t\t\tCompletely powercycle EPS", 
+        "  ppt\t\t\tchange current PPT mode", 
+        "  heater\t\t\tget/set heater state", 
+        "  vboost\t\t\tchange current VBOOST voltage"
+      ], 
+      "cmd": "eps"
+    }, 
+    {
+      "resp": [
+        "eps conf", 
+        "'eps conf' contains sub-commands:", 
+        "  get\t\t\tConf get", 
+        "  set\t\t\tConf set", 
+        "  edit\t\t\tEdit local config", 
+        "  print\t\t\tPrint local config", 
+        "  restore\t\t\tRestore config from default", 
+        "  confirm\t\t\tConfirm config"
+      ], 
+      "cmd": "eps conf"
+    }, 
+    {
+      "resp": [
+        "eps conf get", 
+        "pptmode: 2", 
+        "battheater: 0, low: 0, high: 5", 
+        "vboost[0]: 3700", 
+        "vboost[1]: 3700", 
+        "vboost[2]: 3700", 
+        "output[0]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[1]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[2]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[3]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[4]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[5]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[6]: ondelay: 0, offdelay: 0, normal mode: 0, safe mode 0", 
+        "output[7]: ondelay: 0, offdelay: 0, normal mode: 0, safe mode 0"
+      ], 
+      "cmd": "eps conf get"
+    }, 
+    {
+      "resp": [
+        "eps conf print", 
+        "pptmode: 2", 
+        "battheater: 0, low: 0, high: 5", 
+        "vboost[0]: 3700", 
+        "vboost[1]: 3700", 
+        "vboost[2]: 3700", 
+        "output[0]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[1]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[2]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[3]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[4]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[5]: ondelay: 0, offdelay: 0, normal mode: 1, safe mode 1", 
+        "output[6]: ondelay: 0, offdelay: 0, normal mode: 0, safe mode 0", 
+        "output[7]: ondelay: 0, offdelay: 0, normal mode: 0, safe mode 0"
+      ], 
+      "cmd": "eps conf print"
+    }, 
+    {
+      "resp": [
+        "eps conf restore"
+      ], 
+      "cmd": "eps conf restore"
+    }, 
+    {
+      "resp": [
+        "eps conf confirm"
+      ], 
+      "cmd": "eps conf confirm"
+    }, 
+    {
+      "resp": [
+        "eps conf2", 
+        "'eps conf2' contains sub-commands:", 
+        "  get\t\t\tConf 2 get", 
+        "  set\t\t\tConf 2 set", 
+        "  edit\t\t\tEdit local config 2", 
+        "  print\t\t\tPrint local config 2", 
+        "  restore\t\t\tRestore config 2 from default", 
+        "  confirm\t\t\tConfirm config 2"
+      ], 
+      "cmd": "eps conf2"
+    }, 
+    {
+      "resp": [
+        "eps conf2 get", 
+        "Batt max volt      8300 mV", 
+        "Batt normal volt   7000 mV", 
+        "Batt safe volt     6700 mV", 
+        "Batt critical volt 6500 mV"
+      ], 
+      "cmd": "eps conf2 get"
+    }, 
+    {
+      "resp": [
+        "eps conf2 print", 
+        "Batt max volt      8300 mV", 
+        "Batt normal volt   7000 mV", 
+        "Batt safe volt     6700 mV", 
+        "Batt critical volt 6500 mV"
+      ], 
+      "cmd": "eps conf2 print"
+    }, 
+    {
+      "resp": [
+        "eps conf2 set"
+      ], 
+      "cmd": "eps conf2 set"
+    }, 
+    {
+      "resp": [
+        "eps conf2 restore"
+      ], 
+      "cmd": "eps conf2 restore"
+    }, 
+    {
+      "resp": [
+        "eps conf2 confirm"
+      ], 
+      "cmd": "eps conf2 confirm"
+    }, 
+    {
+      "resp": [
+        "eps", 
+        "'eps' contains sub-commands:", 
+        "  node\t\t\tSet EPS address in OBC host table", 
+        "  hk\t\t\tGet HK", 
+        "  hksub\t\t\tGet HK sub structs", 
+        "  conf\t\t\tConfiguration", 
+        "  conf2\t\t\tConfiguration 2", 
+        "  outputmask\t\t\tSet on/off, argument hex value of output char", 
+        "  output\t\t\tSet channel on/off, argument (channel) to (1 or 0)<channel> <mode> <delay>", 
+        "  resetcounters\t\t\tReset all counters to zero", 
+        "  resetwdt\t\t\tResets the WDT GND", 
+        "  hardreset\t\t\tCompletely powercycle EPS", 
+        "  ppt\t\t\tchange current PPT mode", 
+        "  heater\t\t\tget/set heater state", 
+        "  vboost\t\t\tchange current VBOOST voltage"
+      ], 
+      "cmd": "eps"
+    }, 
+    {
+      "resp": [
+        "eps outputmask 0xFF", 
+        "console args: 0xFF", 
+        "Outputs 0xFF"
+      ], 
+      "cmd": "eps outputmask 0xFF"
+    }, 
+    {
+      "resp": [
+        "eps output", 
+        "Input channel, mode (0=off, 1=on), and delay", 
+        "usage: output <channel> <mode> <delay>", 
+        "Could not execute command 'eps output', error -2"
+      ], 
+      "cmd": "eps output"
+    }, 
+    {
+      "resp": [
+        "eps output 0 0 0", 
+        "Input channel, mode (0=off, 1=on), and delay", 
+        "Channel 0 is set to 0 with delay 0"
+      ], 
+      "cmd": "eps output 0 0 0"
+    }, 
+    {
+      "resp": [
+        "eps output 0 1 0", 
+        "Input channel, mode (0=off, 1=on), and delay", 
+        "Channel 0 is set to 1 with delay 0"
+      ], 
+      "cmd": "eps output 0 1 0"
+    }, 
+    {
+      "resp": [
+        "eps output 0 0 5", 
+        "Input channel, mode (0=off, 1=on), and delay", 
+        "Channel 0 is set to 0 with delay 5"
+      ], 
+      "cmd": "eps output 0 0 5"
+    }, 
+    {
+      "resp": [
+        "eps resetcounters"
+      ], 
+      "cmd": "eps resetcounters"
+    }, 
+    {
+      "resp": [
+        "eps resetwdt"
+      ], 
+      "cmd": "eps resetwdt"
+    }, 
+    {
+      "resp": [
+        "eps ppt", 
+        "usage: ppt <mode>", 
+        "Could not execute command 'eps ppt', error -2"
+      ], 
+      "cmd": "eps ppt"
+    }, 
+    {
+      "resp": [
+        "eps ppt 1"
+      ], 
+      "cmd": "eps ppt 1"
+    }, 
+    {
+      "resp": [
+        "eps heater", 
+        "Input channel, mode (0=off, 1=on)", 
+        "usage: heater <heater> <state>", 
+        "Could not execute command 'eps heater', error -2"
+      ], 
+      "cmd": "eps heater"
+    }, 
+    {
+      "resp": [
+        "eps heater 1", 
+        "Input channel, mode (0=off, 1=on)", 
+        "usage: heater <heater> <state>", 
+        "Could not execute command 'eps heater 1', error -2"
+      ], 
+      "cmd": "eps heater 1"
+    }, 
+    {
+      "resp": [
+        "eps heater 0 1", 
+        "Input channel, mode (0=off, 1=on)", 
+        "Setting heater 0 to 1", 
+        "1 0", 
+        "Heater state is 1 0"
+      ], 
+      "cmd": "eps heater 0 1"
+    }, 
+    {
+      "resp": [
+        "eps heater 0 0", 
+        "Input channel, mode (0=off, 1=on)", 
+        "Setting heater 0 to 0", 
+        "0 0", 
+        "Heater state is 0 0"
+      ], 
+      "cmd": "eps heater 0 0"
+    }, 
+    {
+      "resp": [
+        "eps", 
+        "'eps' contains sub-commands:", 
+        "  node\t\t\tSet EPS address in OBC host table", 
+        "  hk\t\t\tGet HK", 
+        "  hksub\t\t\tGet HK sub structs", 
+        "  conf\t\t\tConfiguration", 
+        "  conf2\t\t\tConfiguration 2", 
+        "  outputmask\t\t\tSet on/off, argument hex value of output char", 
+        "  output\t\t\tSet channel on/off, argument (channel) to (1 or 0)<channel> <mode> <delay>", 
+        "  resetcounters\t\t\tReset all counters to zero", 
+        "  resetwdt\t\t\tResets the WDT GND", 
+        "  hardreset\t\t\tCompletely powercycle EPS", 
+        "  ppt\t\t\tchange current PPT mode", 
+        "  heater\t\t\tget/set heater state", 
+        "  vboost\t\t\tchange current VBOOST voltage"
+      ], 
+      "cmd": "eps"
+    }, 
+    {
+      "resp": [
+        "eps vboost", 
+        "usage: vboost <vboost1> <vboost2> <vboost3>", 
+        "Could not execute command 'eps vboost', error -2"
+      ], 
+      "cmd": "eps vboost"
+    }, 
+    {
+      "resp": [
+        "eps hardreset"
+      ], 
+      "cmd": "eps hardreset"
+    }, 
+    {
+      "resp": [
+        "uptime 2 1000", 
+        "Uptime of node 2 is 19162 s"
+      ], 
+      "cmd": "uptime 2 1000"
+    }, 
+    {
+      "resp": [
+        "eps", 
+        "'eps' contains sub-commands:", 
+        "  node\t\t\tSet EPS address in OBC host table", 
+        "  hk\t\t\tGet HK", 
+        "  hksub\t\t\tGet HK sub structs", 
+        "  conf\t\t\tConfiguration", 
+        "  conf2\t\t\tConfiguration 2", 
+        "  outputmask\t\t\tSet on/off, argument hex value of output char", 
+        "  output\t\t\tSet channel on/off, argument (channel) to (1 or 0)<channel> <mode> <delay>", 
+        "  resetcounters\t\t\tReset all counters to zero", 
+        "  resetwdt\t\t\tResets the WDT GND", 
+        "  hardreset\t\t\tCompletely powercycle EPS", 
+        "  ppt\t\t\tchange current PPT mode", 
+        "  heater\t\t\tget/set heater state", 
+        "  vboost\t\t\tchange current VBOOST voltage"
+      ], 
+      "cmd": "eps"
+    }, 
+    {
+      "resp": [
+        "cmp ident", 
+        "Hostname: nanopower", 
+        "Model:    NanoPower P31u", 
+        "Revision: v2.19", 
+        "Date:     Apr 24 2016", 
+        "Time:     10:29:22"
+      ], 
+      "cmd": "cmp ident"
+    }, 
+    {
+      "resp": [
+        "rps 2 1000", 
+        "PS node 2: ", 
+        "NOMEM", 
+        "Not enough memory"
+      ], 
+      "cmd": "rps 2 1000"
+    }, 
+    {
+      "resp": [
+        "cmp", 
+        "'cmp' contains sub-commands:", 
+        "  ident\t\t\tNode id", 
+        "  route_set\t\t\tUpdate table", 
+        "  ifc\t\t\tRemote IFC", 
+        "  peek\t\t\tShow remote memory", 
+        "  poke\t\t\tModify remote memory", 
+        "  clock\t\t\tGet/Set clock, get t=0, setsys t=-1"
+      ], 
+      "cmd": "cmp"
+    }, 
+    {
+      "resp": [
+        "ifc", 
+        "LOOP    tx: 00805 rx: 00805 txe: 00000 rxe: 00000", 
+        "\t\tdrop: 00000 autherr: 00000 frame: 00000", 
+        "\t\ttxb: 13148 (12.8K) rxb: 13148 (12.8K)\r", 
+        "\nI2C     tx: 00000 rx: 00000 txe: 00000 rxe: 00000", 
+        "\t\tdrop: 00000 autherr: 00000 frame: 00000", 
+        "\t\ttxb: 0 (0.0B) rxb: 0 (0.0B)\r"
+      ], 
+      "cmd": "ifc"
+    }
+  ], 
+  "test_prompt": "\u001b[1;32meps\u001b[1;30m # \u001b[0m\u001b[0m"
+}
