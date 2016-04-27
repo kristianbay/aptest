@@ -78,7 +78,9 @@ class DeviceTester(object):
 
     def write(self, data):
         try:
-            self.serial.write(data)                    # send byte
+            for ch in data.encode('utf-8'):
+                self.serial.write(ch)                    # send byte
+                time.sleep(0.01)
         except:
             self.alive = False
             raise
@@ -106,7 +108,7 @@ class DeviceTester(object):
             timeout -= delta
         return result
 
-    def run_test_cmd(self, test_cmd, expected, prompt=True, timeout=1.5):
+    def run_test_cmd(self, test_cmd, expected, reg_ex, prompt=True, timeout=1.5):
 #         print "run_test_cmd: [%s] [%s]" % (json.dumps(test_cmd), json.dumps(expected))
 #         print "run_test_cmd: [%s] [%s]" % (test_cmd, expected)
         if type(expected) is list:
@@ -125,11 +127,47 @@ class DeviceTester(object):
         if prompt and compare_str.endswith(self.prompt):
             compare_str = compare_str[0:-len(self.prompt)]
         compare_str = compare_str.replace('\n\r', '\r\n')
+        expected = expected.replace('\r', '')
+        compare_str = compare_str.replace('\r', '')
         if compare_str == expected:
             res_str = 'OK'
             result = True
+        elif reg_ex:
+            #print "Check re '{0}' '{1}'".format(expected, compare_str)
+            if re.match(expected, compare_str):
+                res_str = 'OK (regex)'
+                result = True
         else:
-            expr = re.compile('([:|=]\s*)([0-9-.]+)')
+#             expected = expected.replace('%', '\%')
+#             expected = expected.replace('|', '\|')
+#             expected = expected.replace('[', '\[')
+#             expected = expected.replace(']', '\]')
+#             expected = expected.replace('{', '\{')
+#             expected = expected.replace('}', '\}')
+#             expected = expected.replace('(', '\(')
+#             expected = expected.replace(')', '\)')
+            tmp_e = expected.split('\n')
+            tmp_c = compare_str.split('\n')
+            result = True
+            res_str = 'OK (re)'
+            for (exp_line, cmp_line) in zip(tmp_e, tmp_c):
+                if exp_line == cmp_line:
+                    continue
+                for repl in '(){}[]|%-<>':
+                    exp_line = exp_line.replace(repl, '\\' + repl)
+                expr = re.compile('([:|=\( ]\s*)([+|-]*[0-9.]+)')
+                (exp_line, cnt) = expr.subn('\g<1>([+|-]*[0-9.]+)', exp_line)
+                exp_line = '\s*' + '\s*'.join(exp_line.split()) + '\s*'
+                #print "cnt: {0} compare\n'{1}'\n'{2}'".format(cnt, exp_line, cmp_line)
+                if cnt > 0 and re.compile(exp_line).match(cmp_line):
+                    pass
+                else:
+                    result = False
+                    res_str = 'FAILED'
+                    break
+        if False:
+            #expr = re.compile('([:|=\(]\s*)([0-9-.]+)')
+            expr = re.compile('([:|=\( ]\s*)([0-9-.]+)')
             (expected, cnt) = expr.subn('\g<1>([0-9-.]+)', expected)
             if cnt > 0 and re.match(expected, compare_str):
                 res_str = 'OK (re)'
@@ -148,18 +186,17 @@ class DeviceTester(object):
         self.curr_data = ''
         return result
 
-    def dump_results(self, filename=None):
-        if filename:
+    def dump_results(self, rst_filename, json_filename=None):
+        if json_filename:
             try:
-                with open(filename, "wt") as fh:
+                with open(json_filename, "wt") as fh:
                     json.dump(self.report, fh, indent=2)
             except:
-                print 'Error opening "%s"' % (filename)
+                print 'Error opening "%s"' % (json_filename)
         else:
             print json.dumps(self.report, indent=2)
-        filename = 'report.rst'
         try:
-            with open(filename, 'wt') as fh:
+            with open(rst_filename, 'wt') as fh:
                 line_end = '\n'
                 fh.write('.. section-numbering::' + 2*line_end)
                 fh.write('.. role:: okbox' + 2*line_end)
@@ -223,7 +260,7 @@ class DeviceTester(object):
                             fh.write(record + ': :' + style + ':`' + output + '`' + 2*line_end)
                     for record in ['resp', 'expected']:
                         fh.write(record.title() + '::' +2*line_end)
-                        lines = test_result[record].split('\r\n')
+                        lines = test_result[record].split('\n')
                         for line in lines:
                             fh.write('   ' + line + line_end)
                         fh.write(line_end)
@@ -231,7 +268,7 @@ class DeviceTester(object):
                     fh.write('----' + 2*line_end)
                 fh.write('End of test report' + 2*line_end)
         except:
-            print 'Error opening "%s"' % (filename)
+            print 'Error opening "%s"' % (rst_filename)
 
 
 if __name__ == "__main__":
@@ -276,21 +313,24 @@ if __name__ == "__main__":
         print "Failed to initialise test"
     else:
         for test_cmd in config['test_cmds']:
-            tester.run_test_cmd(test_cmd['cmd'], test_cmd['resp'])
+            reg_ex = True if ('regex' in test_cmd and test_cmd['regex'] == True) else False
+            tester.run_test_cmd(test_cmd['cmd'], test_cmd['resp'], reg_ex)
+            time.sleep(0.1)
     
     print "Stop tester"
     
     tester.stop()
     
     json_report = options.report + '.json'
+    rst_report = options.report + '.rst'
     print 'Generating test report: ' + json_report
-    tester.dump_results(json_report)
+    tester.dump_results(rst_report, json_report)
     
     pdf_report = options.report + '.pdf'
     print 'Generating pdf report: ' + pdf_report
     if os.path.exists(pdf_report):
         os.remove(pdf_report)
-    args = ['rst2pdf', 'report.rst', '-s', 'report.style', '-o', pdf_report]
+    args = ['rst2pdf', rst_report, '-s', 'report.style', '-o', pdf_report]
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     for line in p.stdout.readlines():
         print '##: ' + line

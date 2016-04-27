@@ -22,6 +22,7 @@ def serial_reader(prompt, output):
         while True:
             data = serial_port.read(1)
             if data and len(data):
+                #print "serial byte: {0}".format(data.encode('hex'))
                 #sys.stdout.write(str(json.dumps(data)))
                 input_str += data
                 sys.stdout.write(data)
@@ -84,6 +85,7 @@ if __name__ == "__main__":
     
     print 'Starting serial reciever thread'
     prompt = u'\u001b[1;32mnanohub-ex\u001b[1;30m # \u001b[0m\u001b[0m'
+    prompt = u'\u001b[1;32meps\u001b[1;30m # \u001b[0m\u001b[0m'
     output = {'test_prompt': prompt, 'test_cmds': []}
     receiver_thread = threading.Thread(target=serial_reader, args=(prompt, output['test_cmds']))
     receiver_thread.setDaemon(True)
@@ -93,8 +95,11 @@ if __name__ == "__main__":
 #         sock_input = ''
         while True:
             data = sock.recv(16)
+            #print "socket bytes: {0}".format(data.encode('hex'))
             if data and len(data):
-                serial_port.write(data)
+                for ch in data:
+                    serial_port.write(ch)
+                    time.sleep(0.01)
 #                 for ch in data:
 #                     print ch
 #                     if not ch in string.printable:

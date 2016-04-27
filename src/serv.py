@@ -13,6 +13,10 @@ print >>sys.stderr, 'starting up on %s port %s' % server_address
 sock.bind(server_address)
 sock.listen(1)
 
+prompt = "nanomind"
+if len(sys.argv) > 1:
+    prompt = sys.argv[1]
+print "prompt is '{0}'".format(prompt)
 while True:
     print >>sys.stderr, 'waiting for a connection'
     connection, client_address = sock.accept()
@@ -41,7 +45,7 @@ while True:
                 print '>>> send "%s"' % reply.replace('\r\n', '\\r\\n')
                 connection.sendall(reply)
                 time.sleep(0.3)
-                reply = '\033[0;32mnanomind#\033[0m '
+                reply = '\033[1;32m' + prompt + '\033[1;30m # \033[0m\033[0m'
                 print '>>> send "%s"' % reply.replace('\r\n', '\\r\\n')
                 connection.sendall(reply)
             else:

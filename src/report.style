@@ -13,4 +13,5 @@ styles:
     hyphenation: false
     wordWrap: null
     kerning: false
-
+  normal:
+    fontSize: 7
